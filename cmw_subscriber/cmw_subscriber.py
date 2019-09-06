@@ -34,6 +34,13 @@ def start_logger():
 def main():
     logger = start_logger()
 
+    rcl = redis.Redis(host='redis')
+    logger.info("Redis connection opened.")
+
+    japc = pyjapc.PyJapc(incaAcceleratorName=None)
+    logger.info("PyJAPC initialised.")
+
+
     def broker_currents(name, values):
         psus = PSU_GUN if "Gun" in name else PSU_HV
         timestamp = datetime.datetime.now().isoformat()
@@ -49,14 +56,6 @@ def main():
             pipe.execute()
             logger.info(f"Push executed.")
 
-
-
-    rcl = redis.Redis(host='redis')
-    logger.info("Redis connection opened.")
-
-    japc = pyjapc.PyJapc(incaAcceleratorName=None)
-    logger.info("PyJAPC initialised.")
-
     japc.subscribeParam("TwinEBIS_cRIO_HV/PSU_all_values#I_read", broker_currents)
     logger.info("Subscribed to TwinEBIS_cRIO_HV/PSU_all_values#I_read")
 
@@ -65,6 +64,9 @@ def main():
 
     japc.startSubscriptions()
     logger.info("Subscriptions started.")
+
+    while True:
+        pass
 
 
 def mock():

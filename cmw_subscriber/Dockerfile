@@ -15,5 +15,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-# CMD [ "python", "./cmw_subscriber.py" ]
-CMD [ "python", "./test.py" ]
+CMD [ "python", "./cmw_subscriber.py" ]
