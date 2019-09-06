@@ -1,0 +1,8 @@
+redis
+# for dashboard
+dash
+dash-html-components
+dash-core-components
+dash-table
+# deployment
+gunicorn

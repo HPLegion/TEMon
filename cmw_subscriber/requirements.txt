@@ -1,0 +1,5 @@
+redis
+JPype1
+
+git+https://gitlab.cern.ch/scripting-tools/cmmnbuild-dep-manager.git
+git+https://gitlab.cern.ch/scripting-tools/pyjapc.git@v2.0.4
