@@ -7,5 +7,5 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY dashboard.py ./
 
-CMD ["python", "./dashboard.py"]
-# CMD ["gunicorn", "-b", "0.0.0.0:8050", "-w", "4", "dashboard:server"]
+# CMD ["python", "./dashboard.py"]
+CMD ["gunicorn", "-b", "0.0.0.0:8050", "-w", "4", "dashboard:server"]

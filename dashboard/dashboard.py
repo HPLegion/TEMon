@@ -11,8 +11,8 @@ import dash_html_components as html
 #### Constants and stuff ####
 _BUFFERLEN = 7200
 _BOOTSTRAP_CDN = "https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-PSUS = ["gun_platform", "anode_dt", "inner_barrier", "extractor_hv", "cathode_heating",
-        "wehnelt", "anode", "suppressor", "collector", "extractor_gun"]
+PSUS = ["HV_GunBias", "HV_AnodeDt", "HV_InnerBarrier", "HV_Extractor", "GUN_CathodeHeating",
+        "GUN_Wehnelt", "GUN_Anode", "GUN_Suppressor", "GUN_Collector", "GUN_Extractor"]
 
 #### Initialisation ####
 dictConfig({

@@ -5,19 +5,19 @@ import pyjapc
 
 BUFFERLEN = 7200
 PSU_HV = [
-    {"name":"gun_platform", "id":0},
-    {"name":"anode_dt", "id":1},
-    {"name":"inner_barrier", "id":2},
-    {"name":"extractor_hv", "id":3},
+    {"name":"HV_GunBias", "id":0},
+    {"name":"HV_AnodeDt", "id":1},
+    {"name":"HV_InnerBarrier", "id":2},
+    {"name":"HV_Extractor", "id":3},
 ]
 
 PSU_GUN = [
-    {"name":"cathode_heating", "id":0},
-    {"name":"wehnelt", "id":1},
-    {"name":"anode", "id":2},
-    {"name":"suppressor", "id":3},
-    {"name":"collector", "id":4},
-    {"name":"extractor_gun", "id":5},
+    {"name":"GUN_CathodeHeating", "id":0},
+    {"name":"GUN_Wehnelt", "id":1},
+    {"name":"GUN_Anode", "id":2},
+    {"name":"GUN_Suppressor", "id":3},
+    {"name":"GUN_Collector", "id":4},
+    {"name":"GUN_Extractor", "id":5},
 ]
 
 
@@ -66,7 +66,7 @@ def main():
     logger.info("Subscriptions started.")
 
     while True:
-        pass
+        input()
 
 
 def mock():
