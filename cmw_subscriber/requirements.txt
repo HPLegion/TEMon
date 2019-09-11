@@ -1,4 +1,5 @@
 redis
+pytz
 JPype1>=0.6.1,<0.7.0
 
 git+https://gitlab.cern.ch/scripting-tools/cmmnbuild-dep-manager.git

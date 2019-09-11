@@ -1,8 +1,10 @@
 import datetime
 import logging
 import redis
+import pytz
 import pyjapc
 
+TZ = pytz.timezone('Europe/Zurich')
 BUFFERLEN = 7200
 PSU_HV = [
     {"name":"HV_GunBias", "id":0},
@@ -34,7 +36,8 @@ def start_logger():
 def main():
     logger = start_logger()
 
-    rcl = redis.Redis(host='redis')
+    # rcl = redis.Redis(host='redis')
+    rcl = redis.Redis()
     logger.info("Redis connection opened.")
 
     japc = pyjapc.PyJapc(incaAcceleratorName=None)
@@ -43,7 +46,7 @@ def main():
 
     def broker_currents(name, values):
         psus = PSU_GUN if "Gun" in name else PSU_HV
-        timestamp = datetime.datetime.now().isoformat()
+        timestamp = datetime.datetime.now(TZ).isoformat()
         with rcl.pipeline(transaction=True) as pipe:
             for psu in psus:
                 name = psu["name"]
@@ -82,7 +85,7 @@ def mock():
     while True:
         for psu in ["psu0", "psu2", "psu3", "psu4", "psu5", "psu6"]:
             val[psu] = val.get(psu, 0) + random.random() - 0.5
-            timestamp = datetime.datetime.now().isoformat()
+            timestamp = datetime.datetime.now(TZ).isoformat()
             with rcl.pipeline(transaction=True) as pipe:
                 pipe.lpush(f"{psu}:iread:val", val[psu])
                 pipe.ltrim(f"{psu}:iread:val", 0, BUFFERLEN-1)

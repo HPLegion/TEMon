@@ -1,6 +1,7 @@
 import datetime
 from logging.config import dictConfig
 
+import pytz
 import redis
 
 from dash import Dash
@@ -9,6 +10,7 @@ import dash_core_components as dcc
 import dash_html_components as html
 
 #### Constants and stuff ####
+TZ = pytz.timezone('Europe/Zurich')
 _BUFFERLEN = 7200
 _BOOTSTRAP_CDN = "https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
 PSUS = ["HV_GunBias", "HV_AnodeDt", "HV_InnerBarrier", "HV_Extractor", "GUN_CathodeHeating",
@@ -77,7 +79,7 @@ def update_plot(mins, _):
 
         data.append({"x": ts, "y":vals, "name":psu, "type":"line"})
 
-    highlim = datetime.datetime.now()
+    highlim = datetime.datetime.now(TZ)
     lowlim = highlim - datetime.timedelta(minutes=mins)
     layout = {
         "title":'Currents',
