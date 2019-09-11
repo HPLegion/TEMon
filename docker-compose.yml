@@ -14,7 +14,7 @@ services:
     depends_on:
       - redis
 
-  cmw_subscriber:
-    build: ./cmw_subscriber
-    depends_on:
-      - redis
+  # cmw_subscriber:
+  #   build: ./cmw_subscriber
+  #   depends_on:
+  #     - redis
