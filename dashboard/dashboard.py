@@ -92,7 +92,7 @@ def update_plot(_, mins, category):
 
             data.append({"x": ts, "y":vals, "name":psu, "type":"line"})
         y_label = "Current (A)"
-    elif category == "Pressures"
+    elif category == "Pressures":
         for gauge in GAUGES:
             with rcl.pipeline(transaction=True) as pipe:
                 pipe.lrange(f"gauge:{gauge}:val", 0, _BUFFERLEN-1)
