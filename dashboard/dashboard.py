@@ -53,7 +53,7 @@ _BODY = html.Div(className="container", children=[
     dcc.RadioItems(
         id="ctrl_category",
         options=[
-            {'label': 'Currents', 'value': 'Currents'},
+            {'label': 'Currents   ', 'value': 'Currents'},
             {'label': 'Pressures', 'value': 'Pressures'},
             ],
         value='Currents',
