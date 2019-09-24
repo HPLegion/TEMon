@@ -103,7 +103,7 @@ def update_plot(_, mins, category):
             logger.info(f"Pulled from gauge:{gauge}")
 
             data.append({"x": ts, "y":vals, "name":gauge, "type":"line"})
-        yaxis = {"title":"Pressure (mbar)", "tickformat":"e", "type":"log"}
+        yaxis = {"title":"Pressure (mbar)", "tickformat":".2e", "type":"log"}
 
     highlim = datetime.datetime.now(TZ)
     lowlim = highlim - datetime.timedelta(minutes=mins)
