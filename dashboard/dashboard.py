@@ -91,7 +91,7 @@ def update_plot(_, mins, category):
             logger.info(f"Pulled from psu:{psu}:iread")
 
             data.append({"x": ts, "y":vals, "name":psu, "type":"line"})
-        y_label = "Current (A)"
+        yaxis = {"title":"Current (A)"}
     elif category == "Pressures":
         for gauge in GAUGES:
             with rcl.pipeline(transaction=True) as pipe:
@@ -103,7 +103,7 @@ def update_plot(_, mins, category):
             logger.info(f"Pulled from gauge:{gauge}")
 
             data.append({"x": ts, "y":vals, "name":gauge, "type":"line"})
-        y_label = "Pressure (mbar)"
+        yaxis = {"title":"Pressure (mbar)", "tickformat":"e", "type":"log"}
 
     highlim = datetime.datetime.now(TZ)
     lowlim = highlim - datetime.timedelta(minutes=mins)
@@ -111,7 +111,7 @@ def update_plot(_, mins, category):
         "title":category,
         "template":"plotly_dark",
         "xaxis":{"range":[lowlim, highlim]},
-        "yaxis":{"title":y_label},
+        "yaxis":yaxis,
         "uirevision":1
     }
 
