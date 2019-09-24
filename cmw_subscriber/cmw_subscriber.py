@@ -6,6 +6,9 @@ import pyjapc
 
 TZ = pytz.timezone('Europe/Zurich')
 BUFFERLEN = 7200
+CRIO_GUN = "TwinEBIS_cRIO_Gun"
+CRIO_HV = "TwinEBIS_cRIO_HV"
+
 PSU_HV = [
     {"name":"HV_GunBias", "id":0},
     {"name":"HV_AnodeDt", "id":1},
@@ -20,6 +23,11 @@ PSU_GUN = [
     {"name":"GUN_Suppressor", "id":3},
     {"name":"GUN_Collector", "id":4},
     {"name":"GUN_Extractor", "id":5},
+]
+
+GAUGES_HV = [
+    {"name":"EBIS_Gun_Penning", "channel":"Gun Penning"},
+    {"name":"EBIS_Collector_Penning", "channel":"EBIS Collecter Penning"}
 ]
 
 
@@ -44,26 +52,47 @@ def main():
     logger.info("PyJAPC initialised.")
 
 
-    def broker_currents(name, values):
-        psus = PSU_GUN if "Gun" in name else PSU_HV
+    def broker_psus(name, values):
+        psus = PSU_GUN if CRIO_GUN in name else PSU_HV
         timestamp = datetime.datetime.now(TZ).isoformat()
         with rcl.pipeline(transaction=True) as pipe:
             for psu in psus:
                 name = psu["name"]
                 val = values[psu["id"]]
-                pipe.lpush(f"{name}:iread:val", val)
-                pipe.lpush(f"{name}:iread:t", timestamp)
-                pipe.ltrim(f"{name}:iread:val", 0, BUFFERLEN-1)
-                pipe.ltrim(f"{name}:iread:t", 0, BUFFERLEN-1)
-                logger.info(f"Queued push to {name}:iread")
+                pipe.lpush(f"psu:{name}:iread:val", val)
+                pipe.lpush(f"psu:{name}:iread:t", timestamp)
+                pipe.ltrim(f"psu:{name}:iread:val", 0, BUFFERLEN-1)
+                pipe.ltrim(f"psu:{name}:iread:t", 0, BUFFERLEN-1)
+                logger.info(f"Queued push to psu:{name}:*")
             pipe.execute()
-            logger.info(f"Push executed.")
+            logger.info(f"Push to psu:{name}:* executed.")
 
-    japc.subscribeParam("TwinEBIS_cRIO_HV/PSU_all_values#I_read", broker_currents)
-    logger.info("Subscribed to TwinEBIS_cRIO_HV/PSU_all_values#I_read")
+    def broker_gauges(name, values):
+        if CRIO_HV in name:
+            gauges = GAUGES_HV
+        else:
+            raise NotImplementedError
+        timestamp = datetime.datetime.now(TZ).isoformat()
+        with rcl.pipeline(transaction=True) as pipe:
+            for gauge in gauges:
+                name = gauge["name"]
+                val = values[gauge["channel"]]
+                pipe.lpush(f"gauge:{name}:val", val)
+                pipe.lpush(f"gauge:{name}:t", timestamp)
+                pipe.ltrim(f"gauge:{name}:val", 0, BUFFERLEN-1)
+                pipe.ltrim(f"gauge:{name}:t", 0, BUFFERLEN-1)
+                logger.info(f"Queued push to gauge:{name}:*")
+            pipe.execute()
+            logger.info(f"Push to gauge:{name}:* executed.")
 
-    japc.subscribeParam("TwinEBIS_cRIO_Gun/PSU_all_values#I_read", broker_currents)
-    logger.info("Subscribed to TwinEBIS_cRIO_Gun/PSU_all_values#I_read")
+    japc.subscribeParam(f"{CRIO_HV}/PSU_all_values#I_read", broker_psus)
+    logger.info(f"Subscribed to {CRIO_HV}/PSU_all_values#I_read")
+
+    japc.subscribeParam(f"{CRIO_GUN}/PSU_all_values#I_read", broker_psus)
+    logger.info(f"Subscribed to {CRIO_GUN}/PSU_all_values#I_read")
+
+    japc.subscribeParam(f"{CRIO_HV}/Gauge_Levels", broker_gauges)
+    logger.info(f"Subscribed to {CRIO_HV}/Gauge_Levels")
 
     japc.startSubscriptions()
     logger.info("Subscriptions started.")
